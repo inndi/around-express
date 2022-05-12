@@ -1,8 +1,10 @@
 const express = require('express');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const helmet = require('helmet');
 
 const app = express();
+app.use(helmet());
 app.use(userRouter);
 app.use(cardRouter);
 
