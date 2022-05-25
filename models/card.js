@@ -16,5 +16,20 @@ const cardSchema = mongoose.Schema({
       },
       message: props => `${props.value} is not a valid address!`
     },
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true,
+  },
+  likes: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   }
-})
+});
+
+module.exports = mongoose.module('card', cardSchema);
