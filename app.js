@@ -4,16 +4,23 @@ const cardRouter = require('./routes/cards');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 
+const app = express();
+const bodyParser = require('body-parser');
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 mongoose.connect('mongodb://localhost:27017/aroundb', {
   useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false
+  // useCreateIndex: true,
+  // useFindAndModify: false
 });
 
-const app = express();
+
 app.use(helmet());
-app.use(userRouter);
-app.use(cardRouter);
+app.use('/users', userRouter);
+app.use('/cards', cardRouter);
 
 const { PORT = 3000 } = process.env;
 
