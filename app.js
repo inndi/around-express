@@ -17,10 +17,19 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   // useFindAndModify: false
 });
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6290ae8fb3ff4b8e7d9f2867' // paste the _id of the test user created in the previous step
+  };
+
+  next();
+});
 
 app.use(helmet());
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
+
+
 
 const { PORT = 3000 } = process.env;
 

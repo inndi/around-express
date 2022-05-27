@@ -5,17 +5,16 @@ module.exports.getCards = (req, res) => {
     .then((cards) => {
       res.send({ data: cards })
     })
-    .catch(() => { res.status(500).send({ message: 'An error has occurred' }) });
+    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
 };
 
 module.exports.createCard = (req, res) => {
+  const owner = req.user._id;
   const { name, link } = req.body;
 
-  Card.create({ name, link })
-    .then((card) => {
-      res.send({ data: card })
-    })
-    .catch(() => { res.send({ message: 'An error has occurred' }) });
+  Card.create({ name, link, owner })
+    .then((card) => res.send({ data: card }))
+    .catch((err) => res.send({ message: `An ${err}  error has occurred` }));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -23,5 +22,5 @@ module.exports.deleteCard = (req, res) => {
 
   Card.findByIdAndRemove(id)
     .then(() => res.send({ message: 'The card deleted' }))
-    .catch(() => { res.status(500).send({ message: 'An error has occurred' }) });
+    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
 };
