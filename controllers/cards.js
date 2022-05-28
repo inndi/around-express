@@ -2,10 +2,17 @@ const Card = require('../models/card');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
+    .orFail()
     .then((cards) => {
       res.send({ data: cards })
     })
-    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        res.status(404).send({ message: 'cards not found' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' });
+      };
+    });
 };
 
 module.exports.createCard = (req, res) => {
@@ -14,13 +21,26 @@ module.exports.createCard = (req, res) => {
 
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.send({ message: `An ${err}  error has occurred` }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({ message: 'invalid data passed to the methods for creating a card' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' });
+      };
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
   const { id } = req.params;
 
   Card.findByIdAndRemove(id)
-    .then(() => res.send({ message: 'The card deleted' }))
-    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
+    .orFail()
+    .then(() => res.send({ message: 'card deleted' }))
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        res.status(404).send({ message: 'card not found' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' });
+      };
+    });
 };

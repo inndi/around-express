@@ -2,23 +2,33 @@ const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
+    .orFail()
     .then((users) => {
       res.send({ data: users });
     })
-    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        res.status(404).send({ message: 'users not found' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' })
+      };
+    });
 };
 
 module.exports.getUser = (req, res) => {
-  User.findById(req.params.id)
+  const { id } = req.params;
+
+  User.findById(id)
     .then((user) => {
-      // res.send({ data: JSON.parse(user) });
-      if (!user) {
-        res.status(404).send({ message: 'User ID not found' });
-      } else {
-        res.send({ data: JSON.parse(user) });
-      }
+      res.send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(404).send({ message: 'user not found' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' })
+      };
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -27,5 +37,11 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then(user => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'An error has occurred' }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({ message: 'invalid data passed to the methods for creating a user' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' });
+      };
+    });
 };

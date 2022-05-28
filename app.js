@@ -11,15 +11,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/aroundb', {
-  useNewUrlParser: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false
-});
+mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '6290ae8fb3ff4b8e7d9f2867' // paste the _id of the test user created in the previous step
+    _id: '6290ae8fb3ff4b8e7d9f2867'
   };
 
   next();
