@@ -44,3 +44,38 @@ module.exports.deleteCard = (req, res) => {
       };
     });
 };
+
+module.exports.likeCard = (req, res) => {
+  const { id } = req.params;
+
+  Card.findByIdAndUpdate(id,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
+    .then(() => res.send({ message: 'like added' }))
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(404).send({ message: 'card not found' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' });
+      };
+    });
+};
+
+module.exports.dislikeCard = (req, res) => {
+  const { id } = req.params;
+
+  Card.findByIdAndUpdate(
+    id,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
+    .then(() => res.send({ message: 'like deleted' }))
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(404).send({ message: 'card not found' });
+      } else {
+        res.status(500).send({ message: 'An error has occurred' });
+      };
+    });
+};
