@@ -12,9 +12,9 @@ const cardSchema = mongoose.Schema({
     required: true,
     validate: {
       validator: function (v) {
-        return /^https?:\/\/[\w.]*[\w\W]+\.[\w\W]+$/.test(v)
+        return /^https?:\/\/[\w.]*[\w\W]+\.[\w\W]+$/.test(v);
       },
-      message: props => `${props.value} is not a valid address!`
+      message: (props) => `${props.value} is not a valid address!`,
     },
   },
   owner: {
@@ -29,7 +29,7 @@ const cardSchema = mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
 
 module.exports = mongoose.model('card', cardSchema);

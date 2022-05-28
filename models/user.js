@@ -18,11 +18,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: function (v) {
-        return /^https?:\/\/[\w.]*[\w\W]+\.[\w\W]+$/.test(v)
+        return /^https?:\/\/[\w.]*[\w\W]+\.[\w\W]+$/.test(v);
       },
-      message: props => `${props.value} is not a valid address!`
-    }
-  }
+      message: (props) => `${props.value} is not a valid address!`,
+    },
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);
