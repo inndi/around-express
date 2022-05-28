@@ -1,5 +1,15 @@
 const User = require('../models/user');
 
+function handleErr(err, res) {
+  if (err.name === 'CastError' || 'ValidationError') {
+    res.status(400).send({ message: 'NotValid Data' });
+  } else if (err.name === 'DocumentNotFoundError') {
+    res.status(404).send({ message: 'User not found' });
+  } else {
+    res.status(500).send({ message: 'An error has occurred on the server' });
+  }
+}
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .orFail()
@@ -7,11 +17,7 @@ module.exports.getUsers = (req, res) => {
       res.send({ data: users });
     })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'users not found' });
-      } else {
-        res.status(500).send({ message: 'An error has occurred' });
-      }
+      handleErr(err, res);
     });
 };
 
@@ -23,11 +29,7 @@ module.exports.getUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'user not found' });
-      } else {
-        res.status(500).send({ message: 'An error has occurred' });
-      }
+      handleErr(err, res);
     });
 };
 
@@ -37,11 +39,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'invalid data passed to the methods for creating a user' });
-      } else {
-        res.status(500).send({ message: 'An error has occurred' });
-      }
+      handleErr(err, res);
     });
 };
 
@@ -55,18 +53,12 @@ module.exports.updateUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
+      upsert: false,
     },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'invalid data passed to the methods for updating a user' });
-      } else if (err.name === 'CastError') {
-        res.status(404).send({ message: 'user not found' });
-      } else {
-        res.status(500).send({ message: 'An error has occurred' });
-      }
+      handleErr(err, res);
     });
 };
 
@@ -80,17 +72,11 @@ module.exports.updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
+      upsert: false,
     },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'invalid data passed to the methods for updating a user' });
-      } else if (err.name === 'CastError') {
-        res.status(404).send({ message: 'user not found' });
-      } else {
-        res.status(500).send({ message: `An error ${err.name} has occurred` });
-      }
+      handleErr(err, res);
     });
 };
