@@ -8,17 +8,17 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 
 const allowedCors = [
-  'https://around-the-us.students.nomoreparties.sbs',
-  'http://around-the-us.students.nomoreparties.sbs',
-  'localhost:3000'
+  'https://around-us-87u2.onrender.com',
+  'http://around-us-87u2.onrender.com',
+  'localhost:3000',
 ];
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];
 
-  const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
   if (method === 'OPTIONS') {
     res.header('Access-Control-Allow-Method', DEFAULT_ALLOWED_METHODS);
